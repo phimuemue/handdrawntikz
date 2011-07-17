@@ -10,9 +10,6 @@ import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.Panel;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -21,7 +18,7 @@ public class DrawCanvas extends Panel {
 	private static final long serialVersionUID = 1L;
 	private LinkedList<Point> points = new LinkedList<Point>();
 	
-	private LinkedList<Node> nodes = new LinkedList<Node>();
+	LinkedList<Node> nodes = new LinkedList<Node>();
 	private LinkedList<Edge> edges = new LinkedList<Edge>();
 	
 	private Node activeNode = null; // node under cursor
@@ -150,7 +147,10 @@ public class DrawCanvas extends Panel {
 		int avgX = (minx + maxx) / 2;
 		int avgY = (miny + maxy) / 2;
 		int t = nodeSize / 2;
-		return new Node(avgX - t, avgY - t, nodeSize, nodeSize);
+		if (autoAdjustSizes){
+			return new Node(avgX - t, avgY - t, nodeSize, nodeSize);
+		}
+		return new Node (minx, miny, maxx-minx, maxy-miny);
 	}
 
 	public void simplifyPoints() {
@@ -230,82 +230,6 @@ public class DrawCanvas extends Panel {
 		startingNode = null;
 		endingNode = null;
 		activeNode = null;
-	}
-	
-	// this beast implements the whole logic for drawing stuff
-	private class MouseDrawingListener implements MouseMotionListener,
-			MouseListener {
-		private boolean drawing = false;
-		private DrawCanvas canvas = null;
-		private CanvasMode mode = CanvasMode.Node; // default: drawing nodes
-		
-		public MouseDrawingListener(DrawCanvas p) {
-			canvas = p;
-		}
-
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			canvas.addPoint(e.getX(), e.getY());
-		}
-
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			canvas.setActiveNode(null);
-			int x = e.getX();
-			int y = e.getY();
-			for (Node n : canvas.nodes) {
-				if (x >= n.getX() && 
-						x <= n.getX() + n.getWidth() && 
-						y >= n.getY() && 
-						y <= n.getY()+n.getHeight()){
-					canvas.setActiveNode(n);
-					return;
-				}
-			}
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent arg0) {
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent arg0) {
-		}
-
-		@Override
-		public void mouseExited(MouseEvent arg0) {
-		}
-
-		@Override
-		public void mousePressed(MouseEvent arg0) {
-			canvas.removeAllPoints();
-			// are we creating an edge?
-			if (canvas.getActiveNode() != null){
-				System.out.println("Drawing an edge");
-				mode = CanvasMode.Edge;
-				canvas.setStartingNode(canvas.getActiveNode());
-			}
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent arg0) {
-			canvas.simplifyPoints();
-			switch (mode) {
-			case Node:
-				canvas.createNode();
-				break;
-			case Edge:
-				Node tmp = canvas.getNodeAtPoint(arg0.getX(), arg0.getY());
-				if (tmp != null){
-					canvas.setEndingNode(tmp);
-					canvas.createEdge();
-					canvas.relaseNodeBindings();
-				}
-			default:
-				break;
-			}
-			mode = CanvasMode.Node;
-		}
 	}
 
 }
