@@ -81,24 +81,12 @@ public class DrawCanvas extends Panel {
 	@Override
 	public void paint(Graphics g) {
 		g = (Graphics2D)g;
-		// draw nodes
-		((Graphics2D)(g)).setStroke(new BasicStroke(1));
-		g.setColor(new Color(0, 0, 0));
-		for (Node n : nodes) {
-			g.drawRect(n.getX(), n.getY(), n.getWidth(), n.getHeight());
-		}
-		((Graphics2D)(g)).setStroke(new BasicStroke(2));
-		g.setColor(new Color(0, 255, 0));
-		if (activeNode != null){
-			g.drawRect(activeNode.getX(), activeNode.getY(), activeNode.getWidth(), activeNode.getHeight());
-		}
-		((Graphics2D)(g)).setStroke(new BasicStroke(1));
-		g.setColor(new Color(0, 0, 0));
-		// draw edges
-		for (Edge e : edges) {
-			g.drawLine(e.getV1().getX(), e.getV1().getY(), e.getV2().getX(), e.getV2().getY());
-		}
-		// draw current line
+		drawNodes(g);
+		drawEdges(g);
+		drawBrushLine(g);
+	}
+
+	private void drawBrushLine(Graphics g) {
 		if (points.size() < 2) {
 			return;
 		}
@@ -113,6 +101,27 @@ public class DrawCanvas extends Panel {
 			g.drawLine(p.x - 5, p.y - 5, p.x + 5, p.y + 5);
 			g.drawLine(p.x + 5, p.y - 5, p.x - 5, p.y + 5);
 		}
+	}
+
+	private void drawEdges(Graphics g) {
+		for (Edge e : edges) {
+			g.drawLine(e.getV1().getX(), e.getV1().getY(), e.getV2().getX(), e.getV2().getY());
+		}
+	}
+
+	private void drawNodes(Graphics g) {
+		((Graphics2D)(g)).setStroke(new BasicStroke(1));
+		g.setColor(new Color(0, 0, 0));
+		for (Node n : nodes) {
+			g.drawRect(n.getX(), n.getY(), n.getWidth(), n.getHeight());
+		}
+		((Graphics2D)(g)).setStroke(new BasicStroke(2));
+		g.setColor(new Color(0, 255, 0));
+		if (activeNode != null){
+			g.drawRect(activeNode.getX(), activeNode.getY(), activeNode.getWidth(), activeNode.getHeight());
+		}
+		((Graphics2D)(g)).setStroke(new BasicStroke(1));
+		g.setColor(new Color(0, 0, 0));
 	}
 
 	public void addPoint(int x, int y) {
