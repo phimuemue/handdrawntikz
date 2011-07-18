@@ -17,7 +17,7 @@ class MouseDrawingListener implements MouseMotionListener,
 	public MouseDrawingListener(DrawCanvas p) {
 		canvas = p;
 	}
-
+	
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (mode == CanvasMode.Move){
@@ -33,7 +33,7 @@ class MouseDrawingListener implements MouseMotionListener,
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// if currently busy, just skip this stuff
-		if (mode == CanvasMode.Move){
+		if (mode == CanvasMode.Move || mode == CanvasMode.Menu){
 			return;
 		}
 		canvas.setActiveNode(null);
@@ -53,6 +53,7 @@ class MouseDrawingListener implements MouseMotionListener,
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		if (arg0.getButton() == MouseEvent.BUTTON3){
+			mode = CanvasMode.Menu;
 			canvas.getCanvasMenu().show(canvas, arg0.getX(), arg0.getY());
 		}
 	}
@@ -89,7 +90,7 @@ class MouseDrawingListener implements MouseMotionListener,
 		canvas.simplifyPoints();
 		switch (mode) {
 		case Node:
-			canvas.createNode();
+			canvas.recognizeShape();
 			break;
 		case Edge:
 			Node tmp = canvas.getNodeAtPoint(arg0.getX(), arg0.getY());

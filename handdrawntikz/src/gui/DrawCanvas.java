@@ -10,8 +10,11 @@ import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.Panel;
 import java.awt.Point;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+
+import javax.jws.WebParam.Mode;
 
 public class DrawCanvas extends Panel {
 	
@@ -27,7 +30,10 @@ public class DrawCanvas extends Panel {
 	private boolean autoAdjustSizes = true; // automatically adjust node size
 	private int nodeSize = 50;
 	
-	private CanvasMenu canvasMenu = new CanvasMenu();
+	private CanvasMenu canvasMenu = new CanvasMenu(this);
+	
+	// ugly: Canvas and its MouseDrawingListener share this thing so that
+	// each of them knows in which mode it is.
 	
 	public CanvasMenu getCanvasMenu() {
 		return canvasMenu;
@@ -138,10 +144,30 @@ public class DrawCanvas extends Panel {
 		points.clear();
 	}
 
-	public void createNode(){
+	public void recognizeShape(){
 		if (points.size()==5){
-			nodes.add(nodeFromPoints());
+			createNode(nodeFromPoints());
 		}	
+	}
+	
+	public void createNode(Node n){
+		nodes.add(n);
+		repaint();
+	}
+	
+	public void deleteActiveNode(){
+		deleteNode(getActiveNode());
+	}
+		
+	public void deleteNode(Node n){
+		nodes.remove(n);
+		for (Iterator<Edge> i = edges.iterator(); i.hasNext();) {
+			Edge e = (Edge) (i.next());
+			if (e.getV1() == n || e.getV2() == n){
+				i.remove();
+			}
+		}
+		repaint();
 	}
 	
 	private Node nodeFromPoints() {
