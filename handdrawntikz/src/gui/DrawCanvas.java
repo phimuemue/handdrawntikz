@@ -27,6 +27,12 @@ public class DrawCanvas extends Panel {
 	private boolean autoAdjustSizes = true; // automatically adjust node size
 	private int nodeSize = 50;
 	
+	private CanvasMenu canvasMenu = new CanvasMenu();
+	
+	public CanvasMenu getCanvasMenu() {
+		return canvasMenu;
+	}
+
 	public Node getStartingNode() {
 		return startingNode;
 	}
@@ -78,8 +84,8 @@ public class DrawCanvas extends Panel {
 	@Override
 	public void paint(Graphics g) {
 		g = (Graphics2D)g;
-		drawNodes(g);
 		drawEdges(g);
+		drawNodes(g);
 		drawBrushLine(g);
 	}
 
@@ -102,14 +108,16 @@ public class DrawCanvas extends Panel {
 
 	private void drawEdges(Graphics g) {
 		for (Edge e : edges) {
-			g.drawLine(e.getV1().getX(), e.getV1().getY(), e.getV2().getX(), e.getV2().getY());
+			g.drawLine(e.getV1().getMidPoint().x, e.getV1().getMidPoint().y, e.getV2().getMidPoint().x, e.getV2().getMidPoint().y);
 		}
 	}
 
 	private void drawNodes(Graphics g) {
 		((Graphics2D)(g)).setStroke(new BasicStroke(1));
-		g.setColor(new Color(0, 0, 0));
 		for (Node n : nodes) {
+			g.setColor(new Color(255,255,255));
+			g.fillRect(n.getX(), n.getY(), n.getWidth(), n.getHeight());
+			g.setColor(new Color(0, 0, 0));
 			g.drawRect(n.getX(), n.getY(), n.getWidth(), n.getHeight());
 		}
 		((Graphics2D)(g)).setStroke(new BasicStroke(2));
@@ -154,6 +162,9 @@ public class DrawCanvas extends Panel {
 	}
 
 	public void simplifyPoints() {
+		if (points.size() <= 2){
+			return;
+		}
 		// the following three yield a nice result for lines with strict corners
 		eliminateNearNeighbours();
 		adjustAngles();	

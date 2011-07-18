@@ -53,4 +53,8 @@ public class Node {
 		return pointInNode(p.x, p.y);
 	}
 	
+	public Point getMidPoint(){
+		return new Point(x + width/2, y+height/2);
+	}
+	
 }

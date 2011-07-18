@@ -11,6 +11,8 @@ class MouseDrawingListener implements MouseMotionListener,
 		MouseListener {
 	private DrawCanvas canvas = null;
 	private CanvasMode mode = CanvasMode.Node; // default: drawing nodes
+
+	private int moveStartX, moveStartY;
 	
 	public MouseDrawingListener(DrawCanvas p) {
 		canvas = p;
@@ -18,11 +20,22 @@ class MouseDrawingListener implements MouseMotionListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		canvas.addPoint(e.getX(), e.getY());
+		if (mode == CanvasMode.Move){
+			canvas.getActiveNode().setX(e.getX() - moveStartX);
+			canvas.getActiveNode().setY(e.getY() - moveStartY);
+			canvas.repaint();
+		}
+		else {
+			canvas.addPoint(e.getX(), e.getY());
+		}
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		// if currently busy, just skip this stuff
+		if (mode == CanvasMode.Move){
+			return;
+		}
 		canvas.setActiveNode(null);
 		int x = e.getX();
 		int y = e.getY();
@@ -39,6 +52,9 @@ class MouseDrawingListener implements MouseMotionListener,
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
+		if (arg0.getButton() == MouseEvent.BUTTON3){
+			canvas.getCanvasMenu().show(canvas, arg0.getX(), arg0.getY());
+		}
 	}
 
 	@Override
@@ -54,9 +70,17 @@ class MouseDrawingListener implements MouseMotionListener,
 		canvas.removeAllPoints();
 		// are we creating an edge?
 		if (canvas.getActiveNode() != null){
-			System.out.println("Drawing an edge");
-			mode = CanvasMode.Edge;
-			canvas.setStartingNode(canvas.getActiveNode());
+			if (arg0.getButton() == MouseEvent.BUTTON1){
+				System.out.println("Drawing an edge");
+				mode = CanvasMode.Edge;
+				canvas.setStartingNode(canvas.getActiveNode());
+			}
+			if (arg0.getButton() == MouseEvent.BUTTON2){
+				System.out.println("Moving mode");
+				moveStartX = arg0.getX() - canvas.getActiveNode().getX();
+				moveStartY = arg0.getY() - canvas.getActiveNode().getY();
+				mode = CanvasMode.Move;
+			}
 		}
 	}
 
