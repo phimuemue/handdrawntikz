@@ -1,6 +1,7 @@
 package gui;
 
 import graph.Edge;
+import graph.Graph;
 import graph.Node;
 
 import java.awt.BasicStroke;
@@ -267,6 +268,18 @@ public class DrawCanvas extends Panel {
 		startingNode = null;
 		endingNode = null;
 		activeNode = null;
+	}
+	
+	// TODO: construct a field containing the graph all the time!
+	public Graph getGraph(){
+		Graph result = new Graph();
+		for (Node n : nodes) {
+			result.AddNode(n);
+		}
+		for (Edge e : edges) {
+			result.AddEdge(e);
+		}
+		return result;
 	}
 
 }
