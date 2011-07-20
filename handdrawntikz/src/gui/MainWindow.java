@@ -6,6 +6,11 @@ import java.awt.event.WindowListener;
 
 public class MainWindow extends Frame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2278436951424873713L;
+
 	public MainWindow(){
 		this.setSize(800, 600);
 		DrawCanvas dc = new DrawCanvas();

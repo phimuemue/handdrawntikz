@@ -26,6 +26,7 @@ public class TikZExporter extends Exporter {
 		for (Iterator<Edge> edgeIterator = graph.EdgeIterator(); edgeIterator.hasNext();) {
 			Edge e = (Edge) edgeIterator.next();
 			// TODO: edges
+			sb.append("%" + e); // currently, only as comment
 		}
 		sb.append("\\end{tikzpicture}\n");
 		System.out.println(sb);

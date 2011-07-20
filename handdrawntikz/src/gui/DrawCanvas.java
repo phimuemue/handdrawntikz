@@ -15,8 +15,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import javax.jws.WebParam.Mode;
-
 public class DrawCanvas extends Panel {
 	
 	private static final long serialVersionUID = 1L;
@@ -238,6 +236,7 @@ public class DrawCanvas extends Panel {
 		return d.distance(c);
 	}
 	
+	@SuppressWarnings("unused")
 	private void rectify(){
 		for (int i = 0; i < points.size()-2; i++) {
 			Point p = points.get(i+1);
