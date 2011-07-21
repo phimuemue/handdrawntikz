@@ -3,16 +3,28 @@ package graph;
 import java.awt.Point;
 
 public class Node {
+	static int nodeNumber = 0;
+	
 	private int x, y, width, height;
-
+	private int myNumber;
+	
 	public Node(int x, int y, int width, int height) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		myNumber = nodeNumber++;
 	}
 
+	public int getNumber() {
+		return myNumber;
+	}
+	
+	public String toString(){
+		return ""+myNumber;
+	}
+	
 	public int getX() {
 		return x;
 	}
@@ -56,5 +68,5 @@ public class Node {
 	public Point getMidPoint(){
 		return new Point(x + width/2, y+height/2);
 	}
-	
+		
 }
